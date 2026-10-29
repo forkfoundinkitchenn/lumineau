@@ -27,7 +27,7 @@ local function switchProfile()
 		elseif id == "arch" then
 			rebuild = "mkinitcpio -P"
 		elseif id == "debian" or id == "ubuntu" then
-			rebuild = "update-initramfs"
+			rebuild = "update-initramfs -u"
 		else
 			qf.err("unsupported distro\n")
 			for path = 1, #paths do
