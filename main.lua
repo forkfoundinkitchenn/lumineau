@@ -5,10 +5,10 @@ local parser = argparse("Lumineau")
 parser:option("-s --switch", "switch modes [integrated|hybrid|nouveau]")
 parser:flag("-v --verbose", "enable verbose logging")
 parser:flag("-i --info", "display info")
-parser:flag(
-	"-d --daemon",
-	"automatic reclocking daemon for older gpus using nouveau, requires debugfs mounted to /sys/kernel/debug, unstable and may break your system. use at your own risk"
-)
+-- parser:flag(
+-- 	"-d --daemon",
+-- 	"automatic reclocking daemon for older gpus using nouveau, requires debugfs mounted to /sys/kernel/debug, unstable and may break your system. use at your own risk"
+-- )
 parser:flag("-f --force", "force a command")
 
 Args = parser:parse()
