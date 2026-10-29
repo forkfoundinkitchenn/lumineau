@@ -14,7 +14,6 @@ parser:flag("-f --force", "force a command")
 Args = parser:parse()
 --------------------------------
 local qf = require("src.quickfunctions")
-local switchProfile = require("src.switchprofile")
 
 local version = "v0.0.1"
 
@@ -24,6 +23,7 @@ if Args.info then
 end
 
 if Args.switch then
+	local switchProfile = require("src.switchprofile")
 	qf.rootCheck()
 	switchProfile()
 end
