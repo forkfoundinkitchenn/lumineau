@@ -1,16 +1,16 @@
 local qf = {}
 
-function qf.std(string)
-	io.stdout:write("[*] " .. string)
+function qf.std(str)
+	io.stdout:write("[*] " .. tostring(str))
 end
 
-function qf.err(string)
-	io.stderr:write("[-] " .. string)
+function qf.err(str)
+	io.stderr:write("[-] " .. tostring(str))
 end
 
-function qf.verb(string)
+function qf.verb(str)
 	if Args and Args.verbose then
-		io.stderr:write("[~] " .. string)
+		io.stderr:write("[~] " .. tostring(str))
 	end
 end
 

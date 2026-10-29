@@ -17,8 +17,6 @@ local qf = require("src.quickfunctions")
 local switchProfile = require("src.switchprofile")
 
 local version = "v0.0.1"
-local pstate = "/home/juneforkazoid/Projects/lumineau/pstate"
-local clients = "/home/juneforkazoid/Projects/lumineau/clients"
 
 if Args.info then
 	qf.std("Lumieau " .. version .. "\n")
