@@ -15,7 +15,7 @@ Args = parser:parse()
 --------------------------------
 local qf = require("src.quickfunctions")
 
-local version = "v0.0.1"
+local version = "v0.0.2"
 
 if Args.info then
 	qf.std("Lumieau " .. version .. "\n")
