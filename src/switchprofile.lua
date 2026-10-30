@@ -33,10 +33,6 @@ local function switchProfile()
 	end
 
 	local chosenmode = string.lower(tostring(Args.switch))
-	if chosenmode ~= "hybrid" and chosenmode ~= "h" and chosenmode ~= "integrated" and chosenmode ~= "i" then
-		qf.err("invalid profile [integrated|hybrid]\n")
-		os.exit(1)
-	end
 
 	if chosenmode == "integrated" or chosenmode == "i" then
 		if qf.fileExists(paths[2]) and qf.fileExists(paths[3]) and not Args.force then
@@ -109,6 +105,9 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]
 		end
 		statusFile:write("hybrid\n")
 		statusFile:close()
+	else
+		qf.err("invalid profile selected [integrated|hybrid]\n")
+		os.exit(1)
 	end
 
 	os.execute("udevadm control --reload-rules")
