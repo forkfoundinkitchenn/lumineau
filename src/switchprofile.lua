@@ -27,9 +27,8 @@ local function switchProfile()
 	end
 
 	local chosenmode = string.lower(tostring(Args.switch))
-	local statusFile = io.open(paths[1], "w")
-	if not statusFile then
-		qf.err("couldn't write to cache..\n")
+	if chosenmode ~= "y" or chosenmode ~= "n" or chosenmode ~= "yes" or chosenmode ~= "no" then
+		qf.err("invalid profile [integrated|hybrid]\n")
 		os.exit(1)
 	end
 
@@ -40,9 +39,10 @@ local function switchProfile()
 		end
 
 		qf.std("switching profile to integrated\n")
+		local statusFile = io.open(paths[1], "w")
 		local modprobeFile = io.open(paths[2], "w")
 		local ruleFile = io.open(paths[3], "w")
-		if not modprobeFile or not ruleFile then
+		if not statusFile or not modprobeFile or not ruleFile then
 			qf.err("couldn't open configuration files..\n")
 			os.exit(1)
 		end
@@ -82,9 +82,15 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]
     ]])
 		qf.verb("wrote to " .. paths[3])
 		statusFile:write("integrated\n")
+		statusFile:close()
 		modprobeFile:close()
 		ruleFile:close()
 	elseif chosenmode == "hybrid" or chosenmode == "h" then
+		local statusFile = io.open(paths[1], "w")
+		if not statusFile then
+			qf.err("couldn't open configuration files")
+			os.exit(1)
+		end
 		if not qf.fileExists(paths[2]) and not qf.fileExists(paths[3]) and not Args.force then
 			qf.err("system appears to already be using the hybrid profile\n")
 			os.exit(1)
@@ -96,9 +102,9 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]
 			qf.verb("removed: " .. paths[i] .. "\n")
 		end
 		statusFile:write("hybrid\n")
+		statusFile:close()
 	end
 
-	statusFile:close()
 	os.execute("udevadm control --reload-rules")
 	os.execute("udevadm trigger")
 	rebuildInitramfs()
