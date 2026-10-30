@@ -18,7 +18,13 @@ local function rebuildInitramfs()
 	end
 
 	qf.verb(rebuild .. "\n")
-	os.execute(rebuild)
+	local succ, err = os.execute(rebuild)
+	if succ then
+		return true
+	else
+		qf.err("system command failed: " .. err .. "\n")
+		os.exit(1)
+	end
 end
 
 local function switchProfile()
@@ -27,7 +33,7 @@ local function switchProfile()
 	end
 
 	local chosenmode = string.lower(tostring(Args.switch))
-	if chosenmode ~= "y" or chosenmode ~= "n" or chosenmode ~= "yes" or chosenmode ~= "no" then
+	if chosenmode ~= "hybrid" and chosenmode ~= "h" and chosenmode ~= "integrated" and chosenmode ~= "i" then
 		qf.err("invalid profile [integrated|hybrid]\n")
 		os.exit(1)
 	end
