@@ -2,7 +2,7 @@
 --------------------------------
 local argparse = require("libs.argparse")
 local parser = argparse("Lumineau")
-parser:option("-s --switch", "switch modes [integrated|hybrid|nouveau]")
+parser:option("-s --switch", "switch modes [integrated|hybrid]")
 parser:flag("-v --verbose", "enable verbose logging")
 parser:flag("-i --info", "display info")
 -- parser:flag(
