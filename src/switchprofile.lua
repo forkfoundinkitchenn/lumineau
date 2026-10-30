@@ -18,6 +18,7 @@ local function rebuildInitramfs()
 	end
 
 	qf.verb(rebuild .. "\n")
+	os.execute(rebuild)
 end
 
 local function switchProfile()
@@ -26,29 +27,92 @@ local function switchProfile()
 	end
 
 	local chosenmode = string.lower(Args and Args.switch or "")
-
-	if chosenmode == "integrated" or chosenmode == "i" then
-		if qf.fileExists(paths[1]) and qf.fileExists(paths[2]) and qf.fileExists(paths[3]) and not Args.force then
-			qf.err("hmm\n")
-			os.exit(1)
-		end
-
-		qf.std("hi\n")
-	elseif chosenmode == "hybrid" or chosenmode == "h" then
-		if
-			not qf.fileExists(paths[1])
-			and not qf.fileExists(paths[2])
-			and not qf.fileExists(paths[3])
-			and not Args.force
-		then
-			qf.err("what\n")
-			os.exit(1)
-		end
-
-		qf.std("bye\n")
+	local statusFile = io.open(paths[1], "w")
+	if not statusFile then
+		qf.err("couldn't write to cache..\n")
+		os.exit(1)
 	end
 
+	if chosenmode == "integrated" or chosenmode == "i" then
+		if qf.fileExists(paths[2]) and qf.fileExists(paths[3]) and not Args.force then
+			qf.err("system appears to already be using the integrated profile\n")
+			os.exit(1)
+		end
+
+		qf.std("switching profile to integrated\n")
+		local modprobeFile = io.open(paths[2], "w")
+		local ruleFile = io.open(paths[3], "w")
+		if not modprobeFile or not ruleFile then
+			qf.err("couldn't open configuration files..\n")
+			os.exit(1)
+		end
+
+		modprobeFile:write([[
+blacklist nvidia
+blacklist nvidia_drm
+blacklist nvidia_uvm
+blacklist nvidia_modeset
+blacklist nvidia_current
+blacklist nvidia_current_drm
+blacklist nvidia_current_uvm 
+blacklist nvidia_current_modeset
+blacklist i2c_nvidia_gpu
+blacklist nova_core
+blacklist nova_drm 
+blacklist nouveau
+alias nvidia off
+alias nvidia_drm off
+alias nvidia_uvm off
+alias nvidia_modeset off
+alias nvidia_current off
+alias nvidia_current_drm off
+alias nvidia_current_uvm off
+alias nvidia_current_modeset off
+alias i2c_nvidia_gpu off
+alias nova_core off
+alias nova_drm off
+alias nouveau off
+    ]])
+		qf.verb("wrote to " .. paths[2])
+		ruleFile:write([[
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{remove}="1"
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x8c8000", ATTR{remove}="1"
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{remove}="1"
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{remove}="1"
+    ]])
+		qf.verb("wrote to " .. paths[3])
+		statusFile:write("integrated\n")
+		modprobeFile:close()
+		ruleFile:close()
+	elseif chosenmode == "hybrid" or chosenmode == "h" then
+		if not qf.fileExists(paths[2]) and not qf.fileExists(paths[3]) and not Args.force then
+			qf.err("system appears to already be using the hybrid profile\n")
+			os.exit(1)
+		end
+
+		qf.std("switching profile to hybrid")
+		for i = 2, #paths do
+			os.remove(paths[i])
+			qf.verb("removed: " .. paths[i])
+		end
+		statusFile:write("hybrid\n")
+	end
+
+	statusFile:close()
+	os.execute("udevadm control --reload-rules")
+	os.execute("udevadm trigger")
 	rebuildInitramfs()
+	qf.std("complete, would you like to restart now?\n")
+	local userinput
+	while userinput ~= "y" and userinput ~= "yes" and userinput ~= "n" and userinput ~= "no" do
+		io.stdout:write("[y/n] ")
+		userinput = string.lower(tostring(io.stdin:read()))
+
+		if userinput == "y" or userinput == "yes" then
+			qf.std("rebooting..")
+			os.execute("reboot")
+		end
+	end
 end
 
 return switchProfile
