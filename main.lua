@@ -20,7 +20,7 @@ local switchProfile = require("src.switchprofile")
 local version = "v0.0.2"
 
 if Args.info then
-	qf.std("Lumieau " .. version .. "\n")
+	qf.std("Lunimeau " .. version .. "\n")
 	for i = 1, #paths do
 		if qf.fileExists(paths[i]) then
 			qf.std("Existing files: " .. paths[i] .. "\n")
