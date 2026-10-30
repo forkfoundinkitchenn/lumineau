@@ -26,7 +26,7 @@ local function switchProfile()
 		return 1
 	end
 
-	local chosenmode = string.lower(Args and Args.switch or "")
+	local chosenmode = string.lower(tostring(Args.switch))
 	local statusFile = io.open(paths[1], "w")
 	if not statusFile then
 		qf.err("couldn't write to cache..\n")
@@ -89,11 +89,11 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]
 			qf.err("system appears to already be using the hybrid profile\n")
 			os.exit(1)
 		end
+		qf.std("switching profile to hybrid\n")
 
-		qf.std("switching profile to hybrid")
 		for i = 2, #paths do
 			os.remove(paths[i])
-			qf.verb("removed: " .. paths[i])
+			qf.verb("removed: " .. paths[i] .. "\n")
 		end
 		statusFile:write("hybrid\n")
 	end
