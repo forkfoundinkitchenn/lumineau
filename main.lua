@@ -1,6 +1,6 @@
 #!/usr/bin/env lua5.3
 --------------------------------
-local argparse = require("argparse")
+local argparse = require("libs.argparse")
 local parser = argparse("Lumineau")
 parser:option("-s --switch", "switch modes [integrated|hybrid|nouveau]")
 parser:flag("-v --verbose", "enable verbose logging")
