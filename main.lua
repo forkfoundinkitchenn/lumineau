@@ -14,16 +14,25 @@ parser:flag("-f --force", "force a command")
 Args = parser:parse()
 --------------------------------
 local qf = require("src.quickfunctions")
+local paths = { "/var/cache/lumineau-cache", "/etc/modprobe.d/00-lumineau.conf", "/etc/udev/rules.d/00-lumineau.rules" }
+local switchProfile = require("src.switchprofile")
 
 local version = "v0.0.2"
 
 if Args.info then
 	qf.std("Lumieau " .. version .. "\n")
-	qf.std("blah blah blah blah blah\n")
+	for i = 1, #paths do
+		if qf.fileExists(paths[i]) then
+			qf.std("Existing files: " .. paths[i] .. "\n")
+		end
+	end
+	local status = io.open(paths[1], "r")
+	if status then
+		qf.std("Current profile: " .. tostring(status:read()) .. "\n")
+	end
 end
 
 if Args.switch then
-	local switchProfile = require("src.switchprofile")
 	qf.rootCheck()
 	switchProfile()
 end
