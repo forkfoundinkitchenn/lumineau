@@ -120,7 +120,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]
 		userinput = string.lower(tostring(io.stdin:read()))
 
 		if userinput == "y" or userinput == "yes" then
-			qf.std("rebooting..")
+			qf.std("rebooting..\n")
 			os.execute("reboot")
 		end
 	end
