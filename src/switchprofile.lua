@@ -75,14 +75,14 @@ alias nova_core off
 alias nova_drm off
 alias nouveau off
     ]])
-		qf.verb("wrote to " .. paths[2])
+		qf.verb("wrote to " .. paths[2] .. "\n")
 		ruleFile:write([[
 ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{remove}="1"
 ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x8c8000", ATTR{remove}="1"
 ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{remove}="1"
 ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{remove}="1"
     ]])
-		qf.verb("wrote to " .. paths[3])
+		qf.verb("wrote to " .. paths[3] .. "\n")
 		statusFile:write("integrated\n")
 		statusFile:close()
 		modprobeFile:close()
