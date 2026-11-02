@@ -7,7 +7,11 @@ local function reclocker()
 	end
 
 	local chosenclock = string.lower(tostring(Args.reclock))
-	local pstate = "/sys/kernel/debug/dri/0/pstate"
+	local pstate = io.open("/sys/kernel/debug/dri/0/pstate", "w")
+	if not pstate then
+		qf.err("couldn't open pstate file")
+		os.exit(1)
+	end
 	local clock
 
 	if chosenclock == "low" then
@@ -20,7 +24,9 @@ local function reclocker()
 		qf.std("switching clock to high\n")
 		clock = "0f"
 	end
-	os.execute("echo " .. clock .. " | tee " .. pstate)
+
+	pstate:write(clock)
+	pstate:close()
 end
 
 return reclocker
