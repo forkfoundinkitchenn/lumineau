@@ -21,15 +21,17 @@ local reclocker = require("src.reclocker")
 local version = "v0.0.2"
 
 if Args.info then
+	local status = io.open(paths[1], "r")
+
 	qf.std("Lumineau " .. version .. "\n")
 	for i = 1, #paths do
 		if qf.fileExists(paths[i]) then
 			qf.std("Existing files: " .. paths[i] .. "\n")
 		end
 	end
-	local status = io.open(paths[1], "r")
 	if status then
 		qf.std("Current profile: " .. tostring(status:read()) .. "\n")
+		status:close()
 	end
 end
 
